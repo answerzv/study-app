@@ -13,56 +13,87 @@ import CourseDetails from './components/courseDetails/CourseDetails' // 课程�
 import Search from './components/search/Search'  // 搜索页面
 Vue.use(Router);
 
-export default new Router({
+const router = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [
     {
       path: '/',
       name: 'home',
-      component: Home
+      component: Home,
+     
     },
     {
       path:'/MyPage',  // 我的
       name:MyPage,
-      component: MyPage
+      component: MyPage,
+      meta:{
+        requireLogin:true
+      },
     },
     {
       path:'/MyCourses',  // 我的课程
       name:MyCourses,
-      component:MyCourses
+      component:MyCourses,
+      meta:{
+        requireLogin:true
+      },
     },
     {
       path:'/MyCollection',  // 我的收藏
       name:MyCollection,
-      component:MyCollection
+      component:MyCollection,
+      meta:{
+        requireLogin:true
+      },
     },
     {
       path:'/PersonalInfo',  //编辑资料
       name:'PersonalInfo',
-      component:PersonalInfo
+      component:PersonalInfo,
+      meta:{
+        requireLogin:true
+      },
     },
     {
       path:'/signHeader',
       name:signHeader,
       component:signHeader,
+      meta:{
+        requireLogin:true
+      },
     },
     {
       path:'/message',
       name:'message',
       component:message,
+      meta:{
+        requireLogin:true
+      },
     },
     {
       path:'/coursehomepage',  // 课程首页
       component: CourseHomePage,
+      meta:{
+        requireLogin:true
+      },
     },
     {
       path:'/coursedetails',  // 课程详情
-      component: CourseDetails
+      component: CourseDetails,
+      meta:{
+        requireLogin:true
+      },
     },
     {
       path:'/search',  // 搜索页面
       component: Search,
+      meta:{
+        requireLogin:true
+      },
     }
   ]
 })
+
+// 0
+export default router

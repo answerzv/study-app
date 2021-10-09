@@ -3,7 +3,7 @@
         <div class="outline van-hairline--surround" v-for="item in courseList" :key="item.id" @click="courseDetails(item)">
             <img class="img" :src="item.coursecover" >
             <div class="content">
-                <div class="font-one">{{item.name}}}</div>
+                <div class="font-one">{{item.name}}</div>
                 <div class="font-two">
                     已有{{item.buy}}人购买
                     <div class="price">￥{{item.price}}</div>
@@ -14,7 +14,7 @@
         <div v-if="noCourse" class="no-content">没有搜索到任何内容</div>
     </div>
 </template>
-
+ 
 <script>
 import { Loading } from 'vant';
 
@@ -44,23 +44,25 @@ export default {
             }
         },
         requestCourse () {   // 用搜索在vuex的值请求数据
-            var data = {
-                search: this.$store.state.searchCourseValue
-            }
+            var gradeArray = [0, "一年级", "二年级", "三年级", "四年级", "五年级", "六年级", "初一", "初二", "初三", "高一", "高二", "高三"],
+                grade = gradeArray.indexOf(this.$store.state.grade),
+                data = {
+                    grade,
+                    name: this.$store.state.searchCourseValue
+            };
             this.$request.course(data)
             .then((success) => {
-                var list = success.data.data 
+                var list = success.data.data.list 
+                this.courseList = list
+                console.log('搜索请求成功:', this.courseList)
                 switch (list.length) {   // 判断没有课程文字是否显示
                     case 0: this.noCourse = true
                     break;
                     default: this.noCourse = false;
                 }
-                this.courseList = list
-                console.log('请求成功:', this.courseList )
             })
         },
         courseDetails (item) {   // 点击课程跳转到对应界面
-            console.log(item)
             this.$router.push({path: '/coursedetails', query: item})
         }
     }
@@ -83,12 +85,13 @@ export default {
         .img {
             margin-left: 10px;
             box-shadow: 0 0 0 2px #cccccc;
-            // height: 75px;
+            height: 70px;
             width: 120px;
         }
         .content {
             box-sizing: border-box;
             padding: 3px 15px;
+            width: calc(100% - 150px);
             height: 75px;
             .font-one {
                 display: -webkit-box;

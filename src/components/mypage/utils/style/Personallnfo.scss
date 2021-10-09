@@ -2,16 +2,16 @@
 @import "ReuseLibrary";
 
 .PersonalInfo-list{
-  font-size: 3.9vw;
+  font-size: 3.7vw;
   background-color: white;
   .PersonalInfo-avatar{
     @extend %display-between;
-    height: 23vw;
+    height: 22vw;
     margin-left: 3vw;
     border-bottom: 1px solid #dddddd;
     .Avatar-img{
-      width: 16vw;
-      height: 16vw;
+      width: 14vw;
+      height: 14vw;
       border: 1px solid #f5f5f5;
       border-radius: 50%;
       margin: 0 4vw;
@@ -20,7 +20,7 @@
   .PersonalInfo-name{
     @extend %display-between;
     margin-left: 4.5vw;
-    height: 14.6vw;
+    height: 14vw;
     border-bottom: 1px solid #dddddd;
     .alter-name{
       @include display-align(flex,center)
@@ -41,7 +41,7 @@
   .PersonalInfo-grade{
     @include display(flex,space-between,center);
     margin-left: 4.5vw;
-    height: 14.6vw;
+    height: 14vw;
   }
   .alter-name{
     @include display-align(flex,center);
@@ -66,7 +66,6 @@
 }
 
 
-
 .row-list:checked{
   background-color: #1d7ad9;
   color: white;
@@ -79,9 +78,19 @@
   color: white;
 }
 
+//保存
+.Preservation{
+  width: 85%;
+  font-size:3.9vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 1rem;
+  line-height: 1rem;
+};
+
 
 //头像弹框
-
 .van-action-sheet__item,.van-action-sheet__cancel {
   height:14vw;
 }
@@ -121,7 +130,7 @@
 //性别弹框
 .gender-get{
   padding: 14vw 11.5vw;
-  font-size: 3.9vw;
+  font-size: 3.7vw;
   @include display-content(flex,space-between);
 }
 
@@ -208,7 +217,7 @@ input:checked+label::after {
 /* 性别 */
 .van-dialog{
   width:80vw ;
-  height: 70vw;
+  height: 61vw;
 }
 
 .van-dialog__footer--buttons {
@@ -263,18 +272,13 @@ input:checked+label::after {
     font-size: 90%;
     font-weight: bold;
   }
-
-
-
     .row-list{
       width: 10vw;
       padding: 1.2vw  4vw;
       border: 1px solid #1b6199;
       border-radius: 10em;
      &{
-
        width: 19vw;
-
      }
     }
   }
@@ -285,7 +289,6 @@ input:checked+label::after {
   width: 70vw;
   margin-bottom: 4vw;
   padding-left: 1vw;
-
 }
 
 .Margin-1{
@@ -306,10 +309,6 @@ input:checked+label::after {
   border: 1px solid #1b6199;
 }
 
-
-
-
-
 .grade-list-add{
   background-color: #1b6199;
   float: left;
@@ -324,21 +323,10 @@ input:checked+label::after {
   border: 1px solid #1b6199;
 }
 
-
-
-
-
-
 //统一边框角度
 .van-popup--center.van-popup--round,.van-dialog {
   border-radius: 8px;
 }
-
-
-
-
-
-
 
 ul.nav a{
   display: block;
@@ -347,7 +335,6 @@ ul.nav a{
   border-bottom:1px solid #486b02;
   border-top: 1px solid #e4ffd3;
   padding: 0.3em 1em;
-
 }
 // /deep/第三方组件穿透
 /deep/.van-dialog__header {
@@ -364,7 +351,7 @@ ul.nav a{
 
 /deep/.van-dialog .van-button {
   border: 0;
-  font-size: 3.9vw;
+  font-size: 3.7vw;
   height: 15vw;
 }
 /deep/.van-dialog__footer--buttons{

@@ -12,7 +12,7 @@ import CourseContent from './components/CourseContent'
 export default {
     name: 'CourseHomePage',
     components: {
-        CourseHead, 
+        CourseHead,
         CourseContent,
     },
     data () {

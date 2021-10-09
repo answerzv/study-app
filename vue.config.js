@@ -1,8 +1,8 @@
 module.exports = {
     devServer: {
         open: true,
-        host: 'localhost',
-        port: 8080,
+        host: '127.0.0.1',
+        port: 8000,
         disableHostCheck: true,
         proxy: {
             '/cyj': {

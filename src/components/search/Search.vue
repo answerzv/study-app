@@ -14,8 +14,8 @@ import SearchResult from './components/SearchResult'
 export default {
     name: 'Search',
     components: {
-       SearchHead,           // 搜索部分
-       SearchHistory,        // 搜索历史
+       SearchHead,          // 搜索部分
+       SearchHistory,       // 搜索历史
        SearchResult,        // 搜索结果
     },
     data () {
@@ -34,10 +34,10 @@ export default {
     methods: {
         refresh (val) {        // 搜索历史，搜索结果。显示隐藏
             if (val == 'request') {         // 搜索,点击标签。执行
-                // this.showHidden = true
-                // this.$nextTick(() => {
+                this.showHidden = true
+                this.$nextTick(() => {
                     this.showHidden = false
-                // })
+                })
             } 
             else {                        // 取消时执行
                 this.showHidden = true              

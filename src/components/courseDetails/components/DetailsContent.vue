@@ -3,8 +3,9 @@
         <van-tabs class="nav-bar van-hairline--top">
             <van-tab title="详情">
                 <div class="content-font">
-                    <div class="details-title">高中数学知识详解</div>
-                    <div class="details-content">读史使人明智,读诗使人灵秀,数学使人周密,自然哲学使人精邃,伦理学使人庄重,逻辑修辞学使人善辩”。知识能够塑造一个人的性格，而学习恰恰能够使人获得更多的知识，可见学习尤为重要。有很多同学会说学习苦、累，或者我学不会我也考不好不想学了，这两种说法都是错误的。首先，我无法否认学习之苦，学习之类，但甘守学习的苦才能享受学习的甜。 在校园里，我们快乐地成长，为理想而奋斗！遨游学海，跋涉书山，知识上的满足给我们快乐；山重水复，曲径通幽，破解难题的柳暗花明给我们快乐；思想境界上的不断开阔，心灵上的不断净化给我们快乐。记得爱因斯坦曾说：千万不要把学习当成一个任务，而应该看成一个令人羡慕的机会。是的，只要我们不辞劳苦，敢于面对学习中的困难，你会发现，学习中自有情趣，更有快乐。</div>
+                    <div class="details-title">{{this.name}}</div>
+                    <!-- <div class="details-content">{{this.content}}</div> -->
+                    <div class="details-content" v-html="content"></div>
                 </div>
             </van-tab>
             <van-tab title="相关推荐">
@@ -15,23 +16,105 @@
             </van-tab>
         </van-tabs>
         <div class="bottom van-hairline--top">
-            <div class="price">课程价格￥99.00</div>
+            <div class="price" v-if="!priceShow" @click="buyBt">课程价格￥{{this.price}}</div>
+            <div class="price" v-else>已购买</div>
+            <van-rate @click.native="collectBt" v-model="collect" icon="like" void-icon="like-o" :count="1" size="24" color="#ee0a24"/>
         </div>
     </div>
 </template>
 
 <script>
-import { Tab, Tabs } from 'vant';
+import { Tab, Tabs, Rate, Dialog, Notify } from 'vant';
 
 export default {
     name: 'DetailsContent',
     components: {
         [Tab.name]: Tab,
         [Tabs.name]: Tabs,
+        [Rate.name]: Rate,
+        [Dialog.name]: Dialog,
+        [Notify.name]: Notify
+    },
+    data () {
+        return {
+            name: '',    // 课程名称
+            content: '', // 课程价格
+            price: '',   // 课程详情
+            priceShow: '', //是否显示已购买
+            collect: 0,  // 收藏颜色假 
+            collectTrue: 0, // 收藏颜色真
+            UidCid: ''   //请求用的课程id，用户id
+        }
     },
     created () {
-        console.log(this.$route.query)
-        // 进入页面根据传递的数据显示标题。内容。价格。
+        var home=JSON.parse(sessionStorage.getItem('dataID'));
+        this.UidCid = {  //请求用的课程ID，用户ID
+            cid: this.$route.query.id,
+            uid: home
+        }
+
+        this.$request.courseDetails(this.$route.query.id)  //请求课程内容
+        .then((success) => {
+            ({name: this.name, content: this.content, price: this.price} = success.data.data) //接收路由传过来的课程参数
+        });
+
+        this.$request.makeSure(this.UidCid)   //是否显示已购买
+        .then(data => {
+            if(data.data.code != 401) {
+                this.priceShow = true
+            }
+        })
+
+        this.$request.collect(this.UidCid)  //查看是否收藏
+        .then((success) => {
+            this.collect = success.data.data
+            this.collectTrue = success.data.data
+        })
+    },
+    methods: {
+        buyBt () {  //购买课程
+            Dialog.confirm({    
+                message: "是否购买该课程"
+            })
+            .then(() => {
+                this.$request.buyCourse(this.UidCid)
+                .then(() => {
+                    Notify({ type: 'success', message: '购买成功' })
+                    this.priceShow = true
+                    this.bus.$emit("layerChange")  //关闭兄弟组件遮罩层
+                })
+                
+            })
+            .catch(() => {})
+        },
+
+        collectBt () { //收藏/取消收藏
+            this.collect = this.collectTrue
+            Dialog.confirm({    
+                message: this.collectTrue == 0? "是否收藏该课程":"是否取消收藏该课程"
+            })
+            .then(() => {
+                if (this.collectTrue == 0) {
+                    this.$request.collectTrue(this.UidCid)   //课程收藏
+                    .then((success) => {
+                        console.log(success,1111111)
+                        Notify({ type: 'success', message: '成功收藏' })
+                        this.collect = 1
+                        this.collectTrue = 1
+                    }) 
+                }
+                else {
+                     this.$request.collectFalse(this.UidCid)  //课程取消收藏
+                    .then((success) => {
+                        console.log(success,22222222)
+                        Notify({ type: 'success', message: '取消收藏成功' })
+                        this.collect = 0
+                        this.collectTrue = 0
+                    }) 
+                }
+            })
+            .catch(() => {})
+        }
     }
 }
 </script>
@@ -86,11 +169,16 @@ export default {
     .price {
         border-radius: 50px;
         margin: 10px auto;
-        width: 70%;
+        width: 60%;
         line-height: 30px;
         text-align: center;
         color: #ffffff;
         background-color: #169bd5;
+    }
+    .van-rate {
+        position: absolute;
+        top: 12px;
+        right: 6%;
     }
 }
 

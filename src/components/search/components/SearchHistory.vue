@@ -85,6 +85,7 @@ export default {
             border-radius: 30px;
         }
         .tag-history-font {
+            margin-top: 1px;
             max-width: 260px;
             text-overflow: ellipsis;
             overflow: hidden;

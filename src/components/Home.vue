@@ -9,7 +9,7 @@
 
         </div>
         <div class="sign position">
-            <span class="redPoints" v-if="messageStatus"></span>
+            <span class="redPoints" v-if="this.messageStatus"></span>
             <img usemap="#Map2" >
             <map name="Map2" id="Map2">
             <router-link to="/message"><area shape="rect" coords="0,0,30,30"  ></router-link>
@@ -41,7 +41,7 @@
             <span class="content-inner">
                 <div style="text-align:center" class="content-title">公告</div>
                 <p style="text-align:center">{{title}}</p>
-                <p>{{content}}</p>
+                <p>{{removeHTMLTag(content)}}</p>
             </span>
             </van-popup>
     </div>
@@ -49,7 +49,7 @@
 </template>
 
 <script>
- 
+
 import axios from 'axios'
 export default {
     data(){
@@ -70,6 +70,9 @@ export default {
         }
     },
     mounted(){
+         let weChatUrl=this.getNowPageUrl();
+        console.log(weChatUrl)
+        this.initeUserinfo(weChatUrl)
         console.log(window.location.href);
         //sessionStorage.clear();
     var userData=sessionStorage.getItem('dialogInfo')
@@ -80,30 +83,49 @@ export default {
             this.show=true;
             console.log(userData)
         }
-       
+
         sessionStorage.setItem('dialogInfo','1')
          //sessionStorage.clear();
         console.log(userData)
         //this.initeSocket();
         this.noticeInfo();
-        
+
         this.messageStatusinfo();
         //this.redpointStatus();
-        this.initeUserinfo();
+        //this.initeUserinfo();
+
     },
     created(){
         //this.initeSocket();
-        // let weChatUrl=this.getNowPageUrl();
-        // console.log(weChatUrl)
-        
+        // let date=25
+        // console.log(date)
+        //
+        // sessionStorage.setItem('dataID', JSON.stringify(date))
+
     },
     methods:{
         messageStatusinfo(){
             console.log(111)
-            axios.get('/message/admin/list')
+            var _this=this
+            axios.get('/a/message/home/List'
+            ,{
+                params:{
+                    userId:JSON.parse(sessionStorage.getItem('dataID')),
+                }
+            }
+            )
             .then(res=>{
                 console.log(res)
-
+                console.log()
+                for(let x in res.data.data.list){
+                    console.log(res.data.data.list[x].notice)
+                    res.data.data.list[x].notice==0?_this.messageStatus=true:_this.messageStatus=false
+                    console.log(_this.messageStatus)
+                    if(_this.messageStatus){
+                        break;
+                    }
+                    
+                }
             })
             .catch(error=>{
                 console.log(error)
@@ -113,7 +135,7 @@ export default {
             if(this.bannerStatus!="请求失败"){
             axios.get('/a/u/notice/read',{
                 params:{
-                    uid:1,
+                    uid:JSON.parse(sessionStorage.getItem('dataID')),
                     nid:this.noticeId
                 }
             })
@@ -139,19 +161,26 @@ export default {
               _this.title=res.data.data.title
               _this.content=res.data.data.content
               _this.noticeId=res.data.data.id
-              console.log(res)           
+              console.log(res)
               console.log(this.noticeId)
-               axios.get('/a/u/notice/selectRead',{
+          })
+
+          .catch(error=>{
+              console.log(error)
+          })
+      },
+      noticeStatus(){
+            axios.get('/a/u/notice/selectRead',{
               params:{
-                  uid:1,
+                  uid:JSON.parse(sessionStorage.getItem('dataID')),
                   nid:this.noticeId
               }
           })
-          
+
           .then(res=>{
-              
+
               if(res.data.message=="请求失败"){
-                  
+
                   this.pointStatus=false;
                   this.bannerStatus="请求失败"
               }else{
@@ -162,26 +191,20 @@ export default {
           .then(error=>{
               console.log(error)
           })
-          })
-          .catch(error=>{
-              console.log(error)
-          })
-         
       },
       redpointStatus(){
           console.log(this.noticeId)
           //var _this=this
            axios.get('/a/u/notice/selectRead',{
               params:{
-                  uid:1,
+                  uid:JSON.parse(sessionStorage.getItem('dataID')),
                   nid:this.noticeId
               }
           })
-          
+
           .then(res=>{
-              
+
               if(res.data.message=="请求失败"){
-                  
                   this.pointStatus=false;
                   this.bannerStatus="请求失败"
               }
@@ -191,7 +214,7 @@ export default {
               console.log(error)
           })
       },
-     
+
       initeSocket(){
         let url =`ws://${this.url}?${this.type}`
         this.webSocket= new WebSocket(url)
@@ -214,7 +237,7 @@ export default {
     console.log('websocket连接失败');
     console.log(res);
     },
-      
+
         getNowPageUrl(){//截取微信code码的信息字段
         var nowSize=window.location.search.substring(1);
         var nowUrl=nowSize.split('&');
@@ -226,20 +249,36 @@ export default {
             }
         }
     },
+    removeHTMLTag(str) {
+            str = str.replace(/<\/?[^>]*>/g,''); //去除HTML tag
+            //str = str.replace(/[ | ]*\n/g,'\n'); //去除行尾空白
+            //str = str.replace(/\n[\s| | ]*\r/g,'\n'); //去除多余空行
+            //str=str.replace(/ /ig,'');//去掉
+            return str;
+    },
      initeUserinfo(data){
-        console.log(data)
-         axios.get('/a/u/wxlogin')
+         //var _this=this
+        //console.log(aaaa)
+         axios.get('/a/u/login/code',{params:{
+             code:data
+         }})
          .then(res=>{
              console.log(res)
+             console.log(res)
+             let date=res.data.data.id
+             console.log(date)
+
+             sessionStorage.setItem('dataID', JSON.stringify(date))
          })
          .catch(error=>{
              console.log(error)
          })
      }
-   
+
     },
-   
-    
+
+
+
 
 }
 </script>
@@ -281,8 +320,8 @@ img[src=""],img:not([src]){
     left: 41%;
 }
 .redPoints{
-    width: 20px;
-    height: 20px;
+    width: 10px;
+    height: 10px;
     background-color: #ff5722;
     border-radius: 100px;
     right: -22%;

@@ -20,11 +20,11 @@
 			</div>
 		</van-popup>
         <!-- 第二行滑动导航，第三行轮播 -->
-        <van-tabs class="course-slide" line-height="0" :border="false" @click="courseNameBt">
+        <van-tabs class="course-slide" line-height="0" :border="false" @click="courseNameBt" v-model="courseNow">
             <van-tab v-for="(item,index) in courseAll" :title="item" :key="index"></van-tab>
         </van-tabs>
-        <div v-show="!(swipeShow()) || lineShow" class="line"></div>
-		<van-swipe v-show="swipeShow()" :autoplay="3000" indicator-color="#555555">
+        <div v-show="course || lineShow" class="line"></div>
+		<van-swipe v-if="!course" :autoplay="3000" indicator-color="#555555">
 			<van-swipe-item v-for="(item,index) in banner" :key="index" @click="swiperBt(item)">
 				<img :src="item.url" />
 			</van-swipe-item>
@@ -56,15 +56,23 @@ export default {
                 {name: "初中", grade: ["初一", "初二", "初三"]},
                 {name: "高中", grade: ["高一", "高二", "高三"]}
             ],
-            courseAll: ["推荐", "数学", "英文", "语文", "物理", "化学", "生物", "历史"], // 滑动标签课程
+			courseAll: ["推荐", "数学", "英语", "语文", "物理", "化学", "生物", "历史"], //滑动标签课程
+			courseNow: 0,
             banner: [],   // 轮播图存放地址
             course: 0     // 请求的课程,用来判断轮播是否显示
         };
     },
 	created() {
+		var store = this.$store.state
+		if (store.course != "推荐") {
+			this.course = true
+			this.courseNow = this.courseAll.indexOf(store.course)
+		}
+
 		this.$request.banner()      //请求轮播图
 		.then(success => {
-			this.banner = success.data.data;
+			this.banner = success.data.data.list;
+			this.banner.length = 3;
 		});
 	},
 	methods: {
@@ -88,15 +96,7 @@ export default {
 			this.$emit("refresh");
 			this.gradeShow = false;
 		},
-
 		// 第二块滑动导航，轮播
-		swipeShow() {        // 轮播是否显示
-			if (this.course == 0) {
-				return true;
-			} else {
-				return false;
-			}
-		},
 		courseNameBt(index) {        // 点击课程
 			var name = this.courseAll[index];
 			this.course = index;

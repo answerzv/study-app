@@ -1,13 +1,16 @@
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
+//import store from './store'
 
 Vue.config.productionTip = false;
 
 
+// import { apiAddress } from '@/assets/network/api';
+// Vue.prototype.$apiAddress = apiAddress;
 
 import Vconsole from 'vconsole'
-const vConsole = new Vconsole()
+const vConsole = new Vconsole();
 Vue.use(vConsole)
 // fastclick插件
 import fastClick from 'fastclick'
@@ -37,9 +40,12 @@ Vue.use(Popup);
 import { PullRefresh } from 'vant';
 Vue.use(PullRefresh);
 
-import { RadioGroup, Radio } from 'vant';
+import { RadioGroup, Radio,  } from 'vant';
 Vue.use(RadioGroup);
 Vue.use(Radio);
+
+
+
 
 
 //课程列表
@@ -52,7 +58,17 @@ Vue.use(Toast );
 
 import { ActionSheet } from 'vant';
 Vue.use(ActionSheet);
-
+Vue.prototype.$functions = {
+  timestamp (time) {  // 时间戳转日期
+    var date = new Date(time),
+      yera = date.getFullYear(),
+      month = date.getMonth()+1,
+      day = date.getDate();
+      //hour = date.getHours(),
+      //minute = date.getMinutes(),
+      //second = date.getSeconds();
+    return yera + '/' + month + '/' + day
+  }}
 new Vue({
   router,
   store,

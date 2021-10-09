@@ -10,6 +10,11 @@ import { Notify } from 'vant';     // 通知组件
 
 export default {
 	name: 'App',
+	provide(){
+		return{
+			reload:this.reload
+		}
+	},
 	components: {
 		[PullRefresh.name]: PullRefresh,
 		[Notify.name]: Notify
@@ -25,6 +30,12 @@ export default {
 		window.addEventListener('offline', this.networkOff)  // 网络由正常常到异常时触发
 	},
 	methods: {
+		reload(){
+			this.routerShow=false
+			this.$nextTick(function(){
+				this.routerShow=true
+			})
+		},
 		onRefresh() {    // 刷新页面函数
 			this.routerShow = false
 			this.$nextTick(() => {

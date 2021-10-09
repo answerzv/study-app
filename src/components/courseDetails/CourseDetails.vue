@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div style="min-height: 100vh">
         <details-head></details-head>
         <details-content></details-content>
     </div>

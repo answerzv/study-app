@@ -41,7 +41,7 @@
     class="dialogStyle"
     >
     <p style="text-align:center">签到规则</p>
-    <p class="flex-font"><span>1.</span><span>每天签到可以获得5积分</span></p>
+    <p class="flex-font"><span>1.</span><span>每天签到可以获得3积分</span></p>
     <p class="flex-font"><span>2.</span><span>当日按未签到，次日签到重新计算连续签到时间</span></p>
     <p class="flex-font"><span>3.</span><span>连续签到7天，额外奖励15积分，连续签到一个月，奖励50积分</span></p>
     <p class="flex-font"><span>4.</span><span>30天为一个月</span></p>
@@ -49,6 +49,8 @@
     </div>
 </template>
 <script>
+import axios from 'axios'
+import qs from 'qs'
 //let arr=[{date:'2018/4/1',className:"mark1"}, {date:'2018/4/13',className:"mark2"}];
 import Calendar from 'vue-calendar-component';
 
@@ -56,7 +58,7 @@ import Calendar from 'vue-calendar-component';
 export default {
     data(){
         return{
-            arr:[ "2019/10/2", "2019/10/3", "2019/10/4"],
+            arr:[],
             integral:3,
             signStatus:false,//是否签到状态
             totalDay:1,//签到天数
@@ -69,7 +71,40 @@ export default {
      components: {
     Calendar
   },
+  mounted(){
+    //this.clickToday();
+    this.nowData();
+    this.userInfo();
+    
+  },
   methods:{
+    todayTime(){//获取当天时间
+      var now = new Date();
+      var year = now.getFullYear(); //得到年份
+      var month = now.getMonth()+1;//得到月份
+      var date = now.getDate();//得到日期
+      let time = year + "/" + month + "/" + date;
+      return time;
+    },
+    nowData(){
+      var _this=this
+      axios.get('/a/home/signDate',{
+      params:{
+        userId:JSON.parse(sessionStorage.getItem('dataID'))
+      }
+      })
+      .then(res=>{
+        console.log(res)
+        //this.arr=res.data
+         for(let x in res.data){
+        _this.arr.push(_this.$functions.timestamp(res.data[x].signDate))
+      }
+      console.log(_this.arr)
+      })
+      .catch(error=>{
+        console.log(error)
+      })
+    },
       changeDate(date){
           console.log(date);
       },
@@ -82,21 +117,78 @@ export default {
     },
     signNow(){
         var _this=this
-        this.signStatus=true;
+       
+        //this.signUp=true;
+        //let id=19
+        console.log(11)
+        
+        if(!this.signStatus){
+          axios.put('/a/home/signing',qs.stringify({
+           
+          id:JSON.parse(sessionStorage.getItem('dataID'))    
+      }))
+      .then(res=>{
+        
+        console.log(res)
+        
+         this.signStatus=true;
+          _this.signUp=true;
         if(this.arr.indexOf(this.nowDate)==-1){
         this.arr.push(this.nowDate);
         }
-        this.Userintegral=this.Userintegral+this.integral;
-        this.signUp=true;
-        setTimeout(function(){_this.signUp=false},2000)
-        console.log(this.signUp)
-        console.log(this.arr)
+        this.Userintegral=this.Userintegral+res.data.data.integral;
+        this.totalDay=res.data.data.continuous;
+         this.integral=res.data.data.addIntegral;
+      // for(let x in res.data){
+      //   _this.arr.push(_this.$functions.timestamp(res.data[x].signDate))
+      // }
+      setTimeout(function(){
+          _this.signUp=false
+        },2000)
+      }
+      )
+      .catch(error=>{
+        console.log(error)
+        setTimeout(function(){
+          _this.signUp=false
+        },2000)
+      })
+          
+        }else{
+          console.log(111)
+        }
     },
      showPopup() {
       this.show = true;
+    },
+    userInfo(){
+      let _this=this;
+      axios.get('/a/home/signPage',{
+        params:{
+          id:JSON.parse(sessionStorage.getItem('dataID'))
+        }
+      })
+      .then(res=>{
+        console.log(res)
+        if(res.data.data.integral){
+        this.Userintegral=res.data.data.integral;
+        }else{
+          this.Userintegral=0;
+        }
+        this.integral=res.data.data.addIntegral;
+        console.log(res.data.data.integral)
+        this.totalDay=res.data.data.continuous;
+        // console.log(_this.todayTime())
+        // console.log(res.data.data.prev)
+        // console.log(_this.$functions.timestamp(res.data.data.prev))
+        this.signStatus=_this.$functions.timestamp(res.data.data.prev)==_this.todayTime()?true:false
+      })
+      .catch(error=>{
+        console.log(error)
+      })
     }
     
-  }
+  },
 }
 </script>
 <style scoped>
@@ -113,7 +205,7 @@ export default {
     border-radius: 6px;
   }
      .wh_container{
-    margin: 0px!important;
+    /* margin: 0px!important; */
   }
 
   .wh_container >>> .wh_item_date{
