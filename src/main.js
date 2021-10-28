@@ -45,9 +45,6 @@ Vue.use(RadioGroup);
 Vue.use(Radio);
 
 
-
-
-
 //课程列表
 import { List,Cell} from 'vant';
 Vue.use(List);
