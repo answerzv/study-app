@@ -30,6 +30,7 @@ export default {
 		window.addEventListener('offline', this.networkOff)  // 网络由正常常到异常时触发
 	},
 	methods: {
+		
 		reload(){
 			this.routerShow=false
 			this.$nextTick(function(){
