@@ -19,7 +19,6 @@
       </div>
 
       
-      
 
     </van-list>
 </template>
