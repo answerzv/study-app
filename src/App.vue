@@ -8,6 +8,9 @@
 import { PullRefresh } from 'vant';   // 刷新组件
 import { Notify } from 'vant';     // 通知组件
 
+
+
+
 export default {
 	name: 'App',
 	provide(){
