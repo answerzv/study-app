@@ -7,6 +7,7 @@
 
           <img :src="$store.state.data.image" class="PersonalCenter-Avatar">
 
+
         <div>
           <span >{{$store.state.data.name}}</span>
           <span class="Edit-profile" >编辑资料</span>
