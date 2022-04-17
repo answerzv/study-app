@@ -18,6 +18,8 @@
       </div>
     </div>
 
+    
+
     <div class="PersonalCenter-stock">
       <div class="Subset-stock">
         <div class="stock" >
