@@ -9,8 +9,6 @@ import { PullRefresh } from 'vant';   // 刷新组件
 import { Notify } from 'vant';     // 通知组件
 
 
-
-
 export default {
 	name: 'App',
 	provide(){
@@ -54,6 +52,7 @@ export default {
 				background: '#1989fa'
 			});
 		},
+
 		networkOff () {           // 网络由正常常到异常时触发
 			this.$notify({
 				message: '网络连接错误',
